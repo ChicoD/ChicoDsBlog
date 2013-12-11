@@ -92,17 +92,6 @@ class Articles
   public function __construct(&$MySQL)
   {
      $this->mysqlClass=new Mysql("localhost", "root", "", "mysql_database");
-     
-     $co="SELECT * FROM articles";
-$navrat=mysql_query($co);
-echo("<table border=\"1\">");
-for ($i=0;$i<mysql_num_fields($navrat); $i++){
-echo("<td><strong>".mysql_field_name($navrat, $i)."</strong></td>");
-}
-while (list($id, $title, $body, $category, $views, $date) = mysql_fetch_row($navrat)){
-echo("<tr><td>$id</td><td>$title</td><td>$body</td><td>$category</td><td>$views</td><td>$date</td></tr>");
-}
-echo("</table>");
   }
   /*
  * addArticle
@@ -233,11 +222,8 @@ echo("</table>");
   }
   function __destruct()
   { 
-    if($this->showArticles(12)){echo("jo");}
-    else echo("ne");
     $this->mysqlClass="";
   }   
-}     
-    
+}         
     $articles=new Articles($MySQL);   
 ?>
