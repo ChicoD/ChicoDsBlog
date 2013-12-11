@@ -92,6 +92,17 @@ class Articles
   public function __construct(&$MySQL)
   {
      $this->mysqlClass=new Mysql("localhost", "root", "", "mysql_database");
+     
+     $co="SELECT * FROM articles";
+$navrat=mysql_query($co);
+echo("<table border=\"1\">");
+for ($i=0;$i<mysql_num_fields($navrat); $i++){
+echo("<td><strong>".mysql_field_name($navrat, $i)."</strong></td>");
+}
+while (list($id, $title, $body, $category, $views, $date) = mysql_fetch_row($navrat)){
+echo("<tr><td>$id</td><td>$title</td><td>$body</td><td>$category</td><td>$views</td><td>$date</td></tr>");
+}
+echo("</table>");
   }
   /*
  * addArticle
@@ -106,8 +117,13 @@ class Articles
   {
     if(is_string($title) && is_string($body) && is_string($category))
     {
+      $title=mysql_real_escape_string($title);
+      $body=mysql_real_escape_string($body);
+      $category=mysql_real_escape_string($category);
       $this->mysqlClass->getOneResult("INSERT INTO `articles` values ('','$title','$body','$category','0',NOW())");
+      return true;
     }
+    else return false;
   }
   /*
  * updateArticle
@@ -123,7 +139,17 @@ class Articles
   {
     if(is_string($title) && is_string($body) && is_string($category) && is_int($articleId))
     { 
-      $this->mysqlClass->getOneResult("UPDATE `articles` SET `title` = '$title',`body` = '$body',`category` = '$category',`date`=NOW() WHERE `id` = '$articleId'");
+      $title=mysql_real_escape_string($title);
+      $body=mysql_real_escape_string($body);
+      $category=mysql_real_escape_string($category);
+      $control=mysql_query("Select * from `articles` where `id`=$articleId");
+      $num_rows = mysql_num_rows($control);
+      if($num_rows>0)
+      {
+        $result=$this->mysqlClass->getOneResult("UPDATE `articles` SET `title` = '$title',`body` = '$body',`category` = '$category',`date`=NOW() WHERE `id` = '$articleId'");
+        return true;
+      }
+      else return false;
     }
   }
   /*
@@ -138,7 +164,9 @@ class Articles
     if(is_int($articleId))
     { 
      $this->mysqlClass->getOneResult("DELETE FROM `articles` WHERE `id`='$articleId'");
+     return true;
     }
+    else return false;
   }
   /*
  * showArticle
@@ -153,9 +181,15 @@ class Articles
   {
     if(is_int($articleId))
     { 
-      $result=$this->mysqlClass->getOneResult("SELECT * FROM articles WHERE `id`='$articleId'");
-      $this->increaseViews($articleId);
-      return $result;
+      $control=mysql_query("Select * from `articles` where `id`=$articleId");
+      $num_rows = mysql_num_rows($control);
+      if($num_rows>0)
+      {
+        $result=$this->mysqlClass->getOneResult("SELECT * FROM articles WHERE `id`='$articleId'");
+        $this->increaseViews($articleId);
+        return $result;
+      }
+      else return false;  
     }  
     
   }
@@ -172,8 +206,14 @@ class Articles
   {
      if(is_int($limit))
     { 
-       $result=$this->mysqlClass->getArrayOfResults("SELECT * FROM `articles` LIMIT $limit");
-       return $result;
+       $control=mysql_query("SELECT * FROM `articles` LIMIT $limit");
+       $num_rows = mysql_num_rows($control);
+       if($num_rows>0)
+       {
+         $result=$this->mysqlClass->getArrayOfResults("SELECT * FROM `articles` LIMIT $limit");
+         return $result;
+       }
+       else return false;  
     }
     
   } 
@@ -193,6 +233,8 @@ class Articles
   }
   function __destruct()
   { 
+    if($this->showArticles(12)){echo("jo");}
+    else echo("ne");
     $this->mysqlClass="";
   }   
 }     
