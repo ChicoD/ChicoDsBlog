@@ -18,14 +18,14 @@
         $this->password=$password;
         $this->database=$database;
         $connect=mysql_connect($server,$username,$password)or die("Can`t connect to MySQL: " . mysql_error());       
-        $selectDatabase=mysql_select_db("$database")or die("Can`t select DB" . mysql_error());          
+        $selectDatabase=mysql_select_db("$database")or die("Can`t select DB" . mysql_error());           
       }
       /**
        *  querySend(string $query) Sends query
        */
       protected function querySend($query)
       {
-        $querySend=mysql_query("$query")or die("Query error" . mysql_error());
+        $querySend=mysql_query("$query")or die("Query error" . mysql_error());      
         return $querySend;
       }
       /**
@@ -91,9 +91,9 @@ class Articles
  */
   public function __construct(&$MySQL)
   {
-     $this->mysqlClass=new Mysql("localhost", "root", "", "mysql_database");
+     $this->mysqlClass=$MySQL;
   }
-  /*
+  /**
  * addArticle
  *
  * Adds one article
@@ -104,7 +104,7 @@ class Articles
  */
   public function addArticle($title, $body, $category)
   {
-    if(is_string($title) && is_string($body) && is_string($category))
+    if($title && $body && $category)
     {
       $title=mysql_real_escape_string($title);
       $body=mysql_real_escape_string($body);
@@ -114,7 +114,7 @@ class Articles
     }
     else return false;
   }
-  /*
+  /**
  * updateArticle
  *
  * Updates one article
@@ -126,13 +126,12 @@ class Articles
  */
   public function updateArticle($articleId, $title, $body, $category)
   {
-    if(is_string($title) && is_string($body) && is_string($category) && is_int($articleId))
+    if($title && $body && $category && is_int($articleId))
     { 
       $title=mysql_real_escape_string($title);
       $body=mysql_real_escape_string($body);
       $category=mysql_real_escape_string($category);
-      $control=mysql_query("Select * from `articles` where `id`=$articleId");
-      $num_rows = mysql_num_rows($control);
+      $num_rows = $this->mysqlClass->numberOfResults("Select * from `articles` where `id`=$articleId");
       if($num_rows>0)
       {
         $result=$this->mysqlClass->getOneResult("UPDATE `articles` SET `title` = '$title',`body` = '$body',`category` = '$category',`date`=NOW() WHERE `id` = '$articleId'");
@@ -141,7 +140,7 @@ class Articles
       else return false;
     }
   }
-  /*
+  /**
  * deleteArticle
  *
  * Deletes one article
@@ -157,7 +156,7 @@ class Articles
     }
     else return false;
   }
-  /*
+  /**
  * showArticle
  *
  * Gets one result with article
@@ -170,8 +169,7 @@ class Articles
   {
     if(is_int($articleId))
     { 
-      $control=mysql_query("Select * from `articles` where `id`=$articleId");
-      $num_rows = mysql_num_rows($control);
+      $num_rows = $this->mysqlClass->numberOfResults("Select * from `articles` where `id`=$articleId");
       if($num_rows>0)
       {
         $result=$this->mysqlClass->getOneResult("SELECT * FROM articles WHERE `id`='$articleId'");
@@ -182,7 +180,7 @@ class Articles
     }  
     
   }
-  /*
+  /**
  * showArticles
  *
  * Gets limited number of articles
@@ -195,8 +193,7 @@ class Articles
   {
      if(is_int($limit))
     { 
-       $control=mysql_query("SELECT * FROM `articles` LIMIT $limit");
-       $num_rows = mysql_num_rows($control);
+       $num_rows = $this->mysqlClass->numberOfResults("SELECT * FROM `articles` LIMIT $limit");
        if($num_rows>0)
        {
          $result=$this->mysqlClass->getArrayOfResults("SELECT * FROM `articles` LIMIT $limit");
@@ -206,7 +203,7 @@ class Articles
     }
     
   } 
-  /*
+  /**
  * increaseViews
  *
  * Increases view of article
@@ -219,11 +216,6 @@ class Articles
     { 
       $this->mysqlClass->getOneResult("UPDATE `articles` SET `views` = `views`+1 WHERE `id` = '$articleId'");
     }
-  }
-  function __destruct()
-  { 
-    $this->mysqlClass="";
-  }   
-}         
-    $articles=new Articles($MySQL);   
+  }  
+}     
 ?>
