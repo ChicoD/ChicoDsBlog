@@ -2,11 +2,24 @@
 class Admin
 {
   const PASSWORD = '4203db84846e89f3cf8978bf15f9f4c557ad413d80d25d21e40ea1558556acad8e4d5c26a1f55e5552bc5b237b0560cc22e4e34fc6d3532dcb87341e7eb9f173';
+ /**
+ * _construct()
+ *
+ * Starts session
+ *    
+ */
   public function __construct ()
   {
    session_start();
   }
-
+  /**
+ * login()
+ *
+ * Controls password
+ *
+ * @param string $password 
+ * @return boolean 
+ */
   public function login ($password)
   {
     if(isset($password))
@@ -22,23 +35,28 @@ class Admin
       else return false;
     }
     else return false;
-  // Check if given password is correct and return true on success
-
-  // (and save it into $_SESSION) or false if wrong password
-
-  // is given.
   }
+  /**
+ * logout()
+ *
+ * Logouts and destrozs session
+ *  
+ */
   public function logout ()
   {
    if(isset($_SESSION['loggedIn']))
    {
    session_destroy();
    }
-  // Logout admin - just remove it from $_SESSION
   }
-
+  /**
+ * isLogged()
+ *
+ * Controls if user is logged
+ * 
+ * @return boolean 
+ */
   public function isLogged ()
-
   {
     if(isset($_SESSION['loggedIn']))
     {        
@@ -49,18 +67,6 @@ class Admin
       else return false;
     }
     else return false;
-  // Return, if current user is logged as admin or not.
-
-  // This will be used later in admin section or when
-
-  // you will try to, let's say, delete comments.
-
   }
-
 } 
-
-$admin=new Admin();
-$result=$admin->isLogged();
-echo("$result");
-
 ?>
