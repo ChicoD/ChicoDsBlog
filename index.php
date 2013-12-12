@@ -217,5 +217,6 @@ class Articles
       $this->mysqlClass->getOneResult("UPDATE `articles` SET `views` = `views`+1 WHERE `id` = '$articleId'");
     }
   }  
-}     
+}
+     
 ?>
