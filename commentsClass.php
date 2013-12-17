@@ -2,7 +2,6 @@
  
  class Comments
  {
-
    private $mysql;
 
    private $adminNick;
@@ -14,7 +13,6 @@
  * @param string $adminNick 
  */
    public function __construct (&$MySQL, $adminNick)
-
    {
     $this->mysql=$MySQL;
     $this->adminNick=$adminNick;
@@ -30,7 +28,6 @@
  * @return boolean
  */
    public function addComment ($articleId, $text, $nick, $isAdmin)
-
    {
       $num_rows = $this->mysql->numberOfResults("Select * from `articles` where `id`=$articleId");
       if($text && $num_rows>0 && $nick && is_int($articleId) && is_bool($isAdmin))
@@ -39,9 +36,7 @@
         $nick=ltrim($nick);
         $nick=rtrim($nick);  
       }
-      else return false; 
-      
-      
+      else return false;       
       if($nick!=$this->adminNick)
       {
         $this->mysql->numberOfResults("INSERT INTO `comments` values ('','$text','$nick','$articleId')");
@@ -99,5 +94,4 @@
       else return false;
    }
 } 
-
 ?>

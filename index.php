@@ -8,8 +8,4 @@
     $article=new Articles($mysql);
     $admin=new Admin();
     $comments=new Comments($mysql,"dan");
-    
-    //$result=$comments->addComment (4,"zxcxc","czxczxcxc",0);
-    $result=$comments->loadComments (4,-9);
-    echo("$result");
 ?>
