@@ -1,5 +1,4 @@
 <?php
-include("index.php");
 
  class Articles
 {

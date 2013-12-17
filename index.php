@@ -7,8 +7,8 @@
     $mysql=new Mysql("localhost", "root", "", "mysql_database");
     $article=new Articles($mysql);
     $admin=new Admin();
-    $comments=new Comments($mysql,"jmeno");
+    $comments=new Comments($mysql,"dan");
     
-    $result=$article->showArticle(13);
+    $result=$comments->addComment(4,"textik","dan",1);
     echo("$result");
 ?>

@@ -17,25 +17,45 @@
    public function addComment ($articleId, $text, $nick, $isAdmin)
 
    {
-
-   // Check if article with given ID eixsts.
-
-   // Check if text is not empty and escape it against HTML characters.
-
-   // Remember that admin nick can be used only if admin is logged.
-
-   // Also note that "ChicoD" != "ChicoD " != " ChicoD"
-
-   // (maybe trim() will help you here...)
-
+      $num_rows = $this->mysql->numberOfResults("Select * from `articles` where `id`=$articleId");
+      if($text && $num_rows>0 && $nick)
+      {
+        $text=htmlspecialchars($text);
+        $nick=ltrim($nick);
+        $nick=rtrim($nick);  
+      }
+      else return false; 
+      
+      
+      if($nick!=$this->adminNick)
+      {
+        $this->mysql->numberOfResults("INSERT INTO `comments` values ('','$text','$nick')");
+        echo("neprihlasen nick neni stejny");
+        return true;
+      }
+      else
+      {
+        if($isAdmin==1)
+        {
+         $this->mysql->numberOfResults("INSERT INTO `comments` values ('','$text','$nick')");
+         echo("prihlasen nick je stejny");
+         return true;
+        }
+        
+        else echo("neprihlasen nick je stejny");//return false;
+      }
    }
 
    public function deleteComment ($commentId)
 
    {
 
-   // Just delete comment, no big deal...
-
+   if(is_int($commentId))
+     { 
+      $this->mysql->getOneResult("DELETE FROM `comments` WHERE `id`='$articleId'");
+      return true;
+     }
+     else return false;
    }
 
    public function loadComments ($articleId, $limit = 0)
